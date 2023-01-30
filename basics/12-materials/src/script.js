@@ -11,6 +11,7 @@ const gui = new dat.GUI()
  * Textures
  */
 const textureLoader = new THREE.TextureLoader()
+const cubeTextureLoader = new THREE.CubeTextureLoader()
 
 const doorColorTexture = textureLoader.load('/textures/door/color.jpg')
 const doorAlphaTexture = textureLoader.load('/textures/door/alpha.jpg')
@@ -24,6 +25,15 @@ const gradientTexture = textureLoader.load('/textures/gradients/5.jpg')
 gradientTexture.minFilter = THREE.NearestFilter
 gradientTexture.magFilter = THREE.NearestFilter
 gradientTexture.generateMipmaps = false
+
+const enviroentMapTexture = cubeTextureLoader.load([
+    './textures/environmentMaps/3/px.jpg',
+    './textures/environmentMaps/3/nx.jpg',
+    './textures/environmentMaps/3/py.jpg',
+    './textures/environmentMaps/3/ny.jpg',
+    './textures/environmentMaps/3/pz.jpg',
+    './textures/environmentMaps/3/nz.jpg',
+])
 
 /**
  * Base
@@ -66,20 +76,25 @@ const scene = new THREE.Scene()
 // material.color.set(0xffdd00)
 // material.gradientMap = gradientTexture
 
+// const material = new THREE.MeshStandardMaterial()
+// material.metalness = 0
+// material.roughness = 1
+// material.map = doorColorTexture
+// material.aoMap = doorAmbientOcclusionTexture
+// material.aoMapIntensity = 1
+// material.displacementMap = doorHeightTexture
+// material.displacementScale = 0.05
+// material.metalnessMap = doorMetalnessTexture
+// material.roughnessMap = doorRoughnessTexture
+// material.normalMap = doorNormalTexture
+// material.normalScale.set(0.9,0.9,0.9) 
+// material.transparent = true
+// material.alphaMap = doorAlphaTexture
+
 const material = new THREE.MeshStandardMaterial()
-material.metalness = 0
-material.roughness = 1
-material.map = doorColorTexture
-material.aoMap = doorAmbientOcclusionTexture
-material.aoMapIntensity = 1
-material.displacementMap = doorHeightTexture
-material.displacementScale = 0.05
-material.metalnessMap = doorMetalnessTexture
-material.roughnessMap = doorRoughnessTexture
-material.normalMap = doorNormalTexture
-material.normalScale.set(0.9,0.9,0.9) 
-material.transparent = true
-material.alphaMap = doorAlphaTexture
+material.metalness = 0.7
+material.roughness = 0.2
+material.envMap = enviroentMapTexture
 
 
 gui.add(material, 'metalness').min(0).max(1).step(0.0001)
