@@ -39,7 +39,7 @@ fontLoader.load(
     '/fonts/helvetiker_regular.typeface.json',
     (font) => {
         const textGeometry = new TextGeometry(
-            'maximillian may',
+            'maximillian may', 
             {
                 font: font,
                 size: 0.5,
