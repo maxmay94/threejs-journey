@@ -36,7 +36,7 @@ fontLoader.load(
     '/fonts/helvetiker_regular.typeface.json',
     (font) => {
         const textGeometry = new TextGeometry(
-            'Hello Three.js',
+            'maximillian may',
             {
                 font: font,
                 size: 0.5,
@@ -48,6 +48,12 @@ fontLoader.load(
                 bevelOffset: 0,
                 bevelSegments: 4
             }
+        )
+        textGeometry.computeBoundingBox()
+        textGeometry.translate(
+            - textGeometry.boundingBox.max.x * 0.5,
+            - textGeometry.boundingBox.max.y * 0.5,
+            - textGeometry.boundingBox.max.z * 0.5
         )
         const textMaterial = new THREE.MeshNormalMaterial({wireframe: false})
         const text = new THREE.Mesh(textGeometry, textMaterial)
