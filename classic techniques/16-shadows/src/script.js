@@ -3,6 +3,13 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
 
 /**
+ * Textures
+ */
+const textureLoader = new THREE.TextureLoader()
+const bakedShadow = textureLoader.load('/textures/bakedShadow.jpg')
+const simpleShadow = textureLoader.load('textures/simpleShadow.jpg')
+
+/**
  * Base
  */
 // Debug
@@ -31,7 +38,7 @@ gui.add(directionalLight.position, 'y').min(- 5).max(5).step(0.001)
 gui.add(directionalLight.position, 'z').min(- 5).max(5).step(0.001)
 scene.add(directionalLight)
 
-directionalLight.castShadow = true
+directionalLight.castShadow = false
 directionalLight.shadow.mapSize.width = 1024 * 2
 directionalLight.shadow.mapSize.height = 1024 * 2
 directionalLight.shadow.camera.top = 2
@@ -48,7 +55,7 @@ scene.add(directionalLightCameraHelper)
 
 // Spot Light
 const spotLight = new THREE.SpotLight(0xffffff, 0.3, 10, Math.PI * 0.3)
-spotLight.castShadow = true
+spotLight.castShadow = false
 spotLight.position.set(0, 2, 2)
 spotLight.shadow.mapSize.width = 1024 * 2
 spotLight.shadow.mapSize.height = 1024 * 2
@@ -65,7 +72,7 @@ scene.add(spotLightCameraHelper)
 
 // Point Light
 const pointLight = new THREE.PointLight(0xffffff, 0.3)
-pointLight.castShadow = true
+pointLight.castShadow = false
 pointLight.shadow.mapSize.width = 1024 * 2
 pointLight.shadow.mapSize.height = 1024 * 2
 pointLight.shadow.camera.near = 0.1
@@ -76,7 +83,6 @@ scene.add(pointLight)
 const pointLightCameraHelper = new THREE.CameraHelper(pointLight.shadow.camera)
 pointLightCameraHelper.visible = false
 scene.add(pointLightCameraHelper)
-
 
 
 /**
@@ -98,6 +104,7 @@ sphere.castShadow = true
 
 const plane = new THREE.Mesh(
     new THREE.PlaneGeometry(5, 5),
+    // new THREE.MeshBasicMaterial({ map: bakedShadow })
     material
 )
 plane.rotation.x = - Math.PI * 0.5
@@ -106,6 +113,18 @@ plane.position.y = - 0.5
 plane.receiveShadow = true
 
 scene.add(sphere, plane)
+
+const sphereShadow = new THREE.Mesh(
+    new THREE.PlaneGeometry(1.5, 1.5),
+    new THREE.MeshBasicMaterial({
+        color: 0x000000,
+        transparent: true, 
+        alphaMap: simpleShadow
+    })
+)
+sphereShadow.rotation.x = -Math.PI * 0.5
+sphereShadow.position.y = plane.position.y + 0.0001
+scene.add(sphereShadow)
 
 /**
  * Sizes
@@ -153,7 +172,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
-renderer.shadowMap.enabled = true
+renderer.shadowMap.enabled = false
 renderer.shadowMap.type = THREE.PCFSoftShadowMap
 
 
@@ -165,6 +184,16 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+
+    // Update Sphere
+    sphere.position.x = Math.cos(elapsedTime) * 1.5
+    sphere.position.z = Math.sin(elapsedTime) * 1.5
+    sphere.position.y = Math.abs(Math.sin(elapsedTime * 3))
+
+    // Update simpleShadow
+    sphereShadow.position.x = sphere.position.x
+    sphereShadow.position.z = sphere.position.z
+    sphereShadow.material.opacity = (1 - sphere.position.y) * 0.7
 
     // Update controls
     controls.update()
