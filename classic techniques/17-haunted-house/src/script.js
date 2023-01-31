@@ -22,13 +22,17 @@ const textureLoader = new THREE.TextureLoader()
 /**
  * House
  */
-// Temporary sphere
-const sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(1, 32, 32),
-    new THREE.MeshStandardMaterial({ roughness: 0.7 })
+//Group
+const house = new THREE.Group()
+scene.add(house)
+
+// Walls
+const walls = new THREE.Mesh(
+    new THREE.BoxGeometry(4, 2.5, 4),
+    new THREE.MeshStandardMaterial({color: '#ac8e82'})
 )
-sphere.position.y = 1
-scene.add(sphere)
+walls.position.y = 2.5 / 2
+house.add(walls)
 
 // Floor
 const floor = new THREE.Mesh(
@@ -39,18 +43,26 @@ floor.rotation.x = - Math.PI * 0.5
 floor.position.y = 0
 scene.add(floor)
 
+const roof = new THREE.Mesh(
+    new THREE.ConeGeometry(3.5, 1, 4),
+    new THREE.MeshStandardMaterial({color: '#b35f45'})
+)
+roof.position.y = 2.5 + (1 / 2)
+roof.rotation.y = Math.PI * 0.25
+house.add(roof)
+
 /**
  * Lights
  */
 // Ambient light
 const ambientLight = new THREE.AmbientLight('#ffffff', 0.5)
-gui.add(ambientLight, 'intensity').min(0).max(1).step(0.001)
+gui.add(ambientLight, 'intensity').min(0).max(1).step(0.001).name('ambient intensity')
 scene.add(ambientLight)
 
 // Directional light
 const moonLight = new THREE.DirectionalLight('#ffffff', 0.5)
 moonLight.position.set(4, 5, - 2)
-gui.add(moonLight, 'intensity').min(0).max(1).step(0.001)
+gui.add(moonLight, 'intensity').min(0).max(1).step(0.001).name('moon intensity')
 gui.add(moonLight.position, 'x').min(- 5).max(5).step(0.001)
 gui.add(moonLight.position, 'y').min(- 5).max(5).step(0.001)
 gui.add(moonLight.position, 'z').min(- 5).max(5).step(0.001)
