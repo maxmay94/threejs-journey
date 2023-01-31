@@ -18,6 +18,7 @@ const scene = new THREE.Scene()
  * Textures
  */
 const textureLoader = new THREE.TextureLoader()
+const particleTexture = textureLoader.load('/textures/particles/2.png')
 
 /**
  * Particles
@@ -25,25 +26,42 @@ const textureLoader = new THREE.TextureLoader()
 // Geometry
 // const particlesGeometry = new THREE.SphereGeometry(1, 32, 32)
 const particlesGeometry = new THREE.BufferGeometry()
-const count = 5000
+const count = 20000
 
 const positions = new Float32Array(count * 3)
+const colors = new Float32Array(count * 3)
 
 for(let i = 0; i < count * 3; i ++) {
     positions[i] = (Math.random() - 0.5) * 10
+    colors[i] = Math.random()
 }
 
 particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+particlesGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3))
 
 // Material
 const particlesMaterial = new THREE.PointsMaterial({
-    size: 0.02,
+    transparent: true,
+    size: 0.1,
     sizeAttenuation: true,
+    // color: 0xffdd00,
+    alphaMap: particleTexture,
+    vertexColors: true,
 })
+// particlesMaterial.alphaTest = 0.001
+// particlesMaterial.depthTest = false
+particlesMaterial.depthWrite = false
+particlesMaterial.blending = THREE.AdditiveBlending
 
 // Points
 const particles = new THREE.Points(particlesGeometry, particlesMaterial)
 scene.add(particles)
+
+// const cube = new THREE.Mesh(
+//     new THREE.BoxGeometry(),
+//     new THREE.MeshBasicMaterial({color: 0x444400})
+// )
+// scene.add(cube)
 
 
 /**
@@ -98,6 +116,15 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+
+    // Update Particles
+    // particles.rotation.y = elapsedTime * 0.02
+    for(let i = 0; i< count; i++) {
+        const i3 = i * 3
+        const x = particlesGeometry.attributes.position.array[i3 + 0]
+        particlesGeometry.attributes.position.array[i3 + 1] = Math.sin(elapsedTime + x)
+        particlesGeometry.attributes.position.needsUpdate = true
+    }
 
     // Update controls
     controls.update()
