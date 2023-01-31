@@ -201,6 +201,14 @@ doorLight.position.set(0, 2.2, 2.7)
 house.add(doorLight)
 
 /**
+ * Ghosts
+ */
+const ghost1 = new THREE.PointLight('#ff00ff', 2, 3)
+const ghost2 = new THREE.PointLight('#00ffff', 2, 3)
+const ghost3 = new THREE.PointLight('#ffff00', 2, 3)
+scene.add(ghost1, ghost2, ghost3)
+
+/**
  * Sizes
  */
 const sizes = {
@@ -255,6 +263,22 @@ const clock = new THREE.Clock()
 const tick = () =>
 {
     const elapsedTime = clock.getElapsedTime()
+
+    // Update Ghosts
+    const ghost1Angle = elapsedTime * 0.5
+    ghost1.position.x = Math.cos(ghost1Angle) * 4
+    ghost1.position.z = Math.sin(ghost1Angle) * 4
+    ghost1.position.y = Math.sin(ghost1Angle) * 3
+
+    const ghost2Angle = - elapsedTime * 0.32
+    ghost2.position.x = Math.cos(ghost2Angle) * 5
+    ghost2.position.z = Math.sin(ghost2Angle) * 5
+    ghost2.position.y = (Math.sin(ghost2Angle) * 4) + Math.sin(ghost2Angle) * 2.5 
+
+    const ghost3Angle = elapsedTime * 0.15
+    ghost3.position.x = Math.cos(ghost3Angle) * (7 + Math.sin(elapsedTime * 0.25))
+    ghost3.position.z = Math.sin(ghost3Angle) * (7 + Math.sin(elapsedTime * 0.5))
+    ghost3.position.y = (Math.sin(ghost2Angle) * 4) * (Math.sin(ghost2Angle) * 2.5)
 
     // Update controls
     controls.update()
