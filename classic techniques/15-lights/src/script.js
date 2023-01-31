@@ -8,6 +8,17 @@ import * as dat from 'lil-gui'
 // Debug
 const gui = new dat.GUI()
 
+const parameters = { 
+    color: 0xffdd00,
+    spin: () => {
+        gsap.to(mesh.rotation, {
+            duration: 1, 
+            y: mesh.rotation.y + Math.PI * 2,
+            x: mesh.rotation.x + Math.PI
+        })
+    }
+}
+
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
 
@@ -18,13 +29,46 @@ const scene = new THREE.Scene()
  * Lights
  */
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+// ambientLight.color = new THREE.Color(0xffffff)
+// ambientLight.intensity = 0.5
 scene.add(ambientLight)
+gui.add(ambientLight, 'intensity').min(0).max(1).step(0.00001).name('ambient')
+gui.addColor(parameters, 'color')
+    .onChange(() => {
+        ambientLight.color.set(parameters.color)
+    }).name('ambient color')
 
-const pointLight = new THREE.PointLight(0xffffff, 0.5)
-pointLight.position.x = 2
-pointLight.position.y = 3
-pointLight.position.z = 4
+const directionalLight = new THREE.DirectionalLight(parameters.color, 0.3)
+directionalLight.position.set(1, 0.25, 0)
+scene.add(directionalLight)
+gui.add(directionalLight, 'intensity').min(0).max(1).step(0.00001).name('directional')
+gui.addColor(parameters, 'color')
+    .onChange(() => {
+        directionalLight.color.set(parameters.color)
+    }).name('directional color')
+
+
+const hemisphereLight = new THREE.HemisphereLight(0x0ff0000, 0x0000ff, 0.3)
+scene.add(hemisphereLight)
+
+const pointLight = new THREE.PointLight(0xff9000, 0.5)
+pointLight.position.set(1, -0.5, 1)
+pointLight.distance = 10
 scene.add(pointLight)
+
+const rectAreaLight = new THREE.RectAreaLight(0x4e00ff, 2, 3, 1)
+rectAreaLight.position.set(-1.5, 0, 1.5)
+rectAreaLight.lookAt(new THREE.Vector3())
+scene.add(rectAreaLight)
+
+const spotLight = new THREE.SpotLight(0x78ff00, 0.5, 10, Math.PI * 0.1, 0.5, 1)
+spotLight.position.set(0, 2, 3)
+spotLight.target.position.x = - 0.75
+scene.add(spotLight)
+scene.add(spotLight.target)
+
+
+
 
 /**
  * Objects
