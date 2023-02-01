@@ -39,19 +39,37 @@ const environmentMapTexture = cubeTextureLoader.load([
 const world = new CANNON.World()
 world.gravity.set(0, -9.82, 0)
 
+// Materials
+const defaultMaterial = new CANNON.Material('default')
+
+// Contact Material
+const defaultContactMaterial = new CANNON.ContactMaterial(
+    defaultMaterial,
+    defaultMaterial, {
+        friction: 0.1,
+        restitution: 0.6
+    }
+)
+world.addContactMaterial(defaultContactMaterial)
+world.defaultContactMaterial = (defaultContactMaterial)
+
 // Sphere
 const sphereShape = new CANNON.Sphere(0.5)
 const sphereBody = new CANNON.Body({
     mass: 1, 
     position: new CANNON.Vec3(0, 3, 0),
     shape: sphereShape,
+    // material: defaultMaterial
 })
+sphereBody.applyLocalForce(new CANNON.Vec3(150, 0, 0), new CANNON.Vec3(0,0,0,)) 
+// ^^^^ apply 150 force in x direction one time, force applied to center of sphere
 world.addBody(sphereBody)
 
 // Floor
 const floorShape = new CANNON.Plane()
 const floorBody = new CANNON.Body()
-floorBody.mass = 0
+floorBody.mass = 0 // mass is 0 so floor doesnt fall
+// floorBody.material = defaultMaterial
 floorBody.quaternion.setFromAxisAngle(new CANNON.Vec3(-1, 0, 0), Math.PI / 2)
 floorBody.addShape(floorShape)
 world.addBody(floorBody)
@@ -165,6 +183,7 @@ const tick = () =>
     oldElapsedTime = elapsedTime
 
     // Update Physics World
+    sphereBody.applyForce(new CANNON.Vec3(-0.5, 0, 0), sphereBody.position)
     world.step(1 / 60, deltaTime, 3)
     sphere.position.copy(sphereBody.position)
 
