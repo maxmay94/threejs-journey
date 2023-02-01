@@ -30,10 +30,24 @@ const debugObject = {
                 z: (Math.random() -0.5) * 3
             }
         )
+    },
+    reset: () => {
+        for(const object of objectsToUpdate) {
+            // Remove Body
+            object.body.removeEventListener('collide', playHitSound)
+            world.removeBody(object.body)
+
+            // Remove Mesh
+            scene.remove(object.mesh)
+
+            // Clear Object Array
+            objectsToUpdate.splice(0, objectsToUpdate.length)
+        }
     }
 }
 gui.add(debugObject, 'createSphere')
 gui.add(debugObject, 'createBox')
+gui.add(debugObject, 'reset')
 
 /**
  * Base
@@ -43,6 +57,21 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+
+/**
+ * Sounds
+ */
+const hitSound = new Audio('/sounds/hit.mp3')
+
+const playHitSound = (collision) => {
+    const impactStrength = collision.contact.getImpactVelocityAlongNormal()
+
+    if(impactStrength > 1.5) { 
+        hitSound.volume = Math.random()
+        hitSound.currentTime = 0
+        hitSound.play()
+    }
+}
 
 /**
  * Textures
@@ -63,6 +92,8 @@ const environmentMapTexture = cubeTextureLoader.load([
  * Physics
  */
 const world = new CANNON.World()
+world.broadphase = new CANNON.SAPBroadphase(world)
+world.allowSleep = true
 world.gravity.set(0, -9.82, 0)
 
 // Materials
@@ -191,10 +222,10 @@ const createSphere = (radius, position) => {
     mesh.castShadow = true
     mesh.position.copy(position)
     scene.add(mesh)
-
+    
     // Cannon Js Body
     const shape = new CANNON.Sphere(radius)
-
+    
     const body = new CANNON.Body({
         mass: 1,
         // position: new CANNON.Vec3(0, 3, 0),
@@ -202,6 +233,7 @@ const createSphere = (radius, position) => {
         material: defaultMaterial
     })
     body.position.copy(position)
+    body.addEventListener('collide', playHitSound)
     world.addBody(body)
 
     // Save in Objects to Update
@@ -237,6 +269,7 @@ const createBox = (width, height, depth, position) => {
         material: defaultContactMaterial
     })
     body.position.copy(position)
+    body.addEventListener('collide', playHitSound)
     world.add(body)
 
     // Save in Objects to Update
