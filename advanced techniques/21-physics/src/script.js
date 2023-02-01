@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
-import CANNON from 'cannon'
+import * as CANNON from 'cannon-es'
 
 
 /**
@@ -33,6 +33,7 @@ const debugObject = {
     },
     reset: () => {
         for(const object of objectsToUpdate) {
+            console.log('removeBody')
             // Remove Body
             object.body.removeEventListener('collide', playHitSound)
             world.removeBody(object.body)
@@ -270,7 +271,7 @@ const createBox = (width, height, depth, position) => {
     })
     body.position.copy(position)
     body.addEventListener('collide', playHitSound)
-    world.add(body)
+    world.addBody(body)
 
     // Save in Objects to Update
     objectsToUpdate.push({
