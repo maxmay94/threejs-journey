@@ -1,6 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
 /**
  * Base
@@ -13,6 +14,17 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+const gltfLoader = new GLTFLoader()
+let model = null
+
+gltfLoader.load(
+    './models/Duck/glTF-Binary/Duck.glb', 
+    (gltf) => {
+        model = gltf.scene
+        model.position.y = -1.2
+        scene.add(model)
+    }
+)
 
 /**
  * Objects
@@ -88,6 +100,14 @@ window.addEventListener('mousemove', (_event) => {
     mouse.y = - (_event.clientY / sizes.height) * 2 + 1
 })
 
+window.addEventListener('click', () => {
+    if(currentIntersect) {
+        // if(currentIntersect.object === object1) console.log('you clicked object 1')
+        // if(currentIntersect.object === object2) console.log('you clicked object 2')
+        // if(currentIntersect.object === object3) console.log('you clicked object 3')
+    }
+})
+
 /**
  * Camera
  */
@@ -110,9 +130,18 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 /**
+ * Lights
+ */
+const directionalLight = new THREE.DirectionalLight('#ffffff', 0.7)
+directionalLight.position.set(1, 2, 3)
+scene.add(directionalLight)
+
+/**
  * Animate
  */
 const clock = new THREE.Clock()
+
+let currentIntersect = null
 
 const tick = () =>
 {
@@ -133,6 +162,28 @@ const tick = () =>
     }
     for(const intersect of intersects) {
         intersect.object.material.color.set('#55ff00')
+    }
+
+    if(intersects.length) {
+        if(currentIntersect === null) {
+            // console.log('mouse enter')
+        }
+        currentIntersect = intersects[0]
+    } else {
+        if(currentIntersect) {
+            // console.log('mouse exit')
+        }
+        currentIntersect = null
+    }
+
+    // Test intersect with model
+    if(model) {
+        const modelIntersects = raycaster.intersectObject(model)
+        if(modelIntersects.length) {
+            model.scale.set(1.2, 1.2, 1.2)
+        } else {
+            model.scale.set(1, 1, 1)
+        }
     }
 
     // Update controls
