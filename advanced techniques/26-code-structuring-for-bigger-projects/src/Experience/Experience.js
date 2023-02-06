@@ -12,11 +12,18 @@ export default class Experience {
     // Setup
     this.sizes = new Sizes()
     this.time = new Time()
-    
+
+    // Sizes resize Event
     this.sizes.on('resize', () => {
       this.resize()
+    })
+
+    // Time tick event
+    this.time.on('tick', () => {
+      this.update()
     })
   }
 
   resize() {}
+  update() {}
 }
