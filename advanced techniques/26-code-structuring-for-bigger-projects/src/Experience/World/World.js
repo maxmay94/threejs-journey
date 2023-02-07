@@ -1,11 +1,12 @@
 import * as THREE from 'three'
-import Experience from "../Experience.js";
-import Environment from './Environment.js';
+import Experience from "../Experience.js"
+import Environment from './Environment.js'
 
 export default class World {
   constructor() {
     this.experience = new Experience()
     this.scene = this.experience.scene
+    this.resources = this.experience.resources
     
     // Test Mesh
     const testMesh = new THREE.Mesh(
@@ -14,7 +15,10 @@ export default class World {
       )
       this.scene.add(testMesh)
 
-      // Setup
-      this.environment = new Environment()
+      this.resources.on('ready', () => {
+        // Setup
+        this.environment = new Environment()
+      })
+
     }
 }

@@ -1,6 +1,6 @@
 export default [
   {
-    name: 'environementMapTexture',
+    name: 'environmentMapTexture',
     type: 'cubeTexture',
     path: [
       'textures/environmentMap/px.jpg',
