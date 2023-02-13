@@ -1,6 +1,9 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
+import waterVertexShader from './shaders/water/vertex.glsl'
+import waterFragmetShader from './shaders/water/fragment.glsl'
+
 
 /**
  * Base
@@ -21,8 +24,11 @@ const scene = new THREE.Scene()
 const waterGeometry = new THREE.PlaneGeometry(2, 2, 128, 128)
 
 // Material
-const waterMaterial = new THREE.MeshBasicMaterial()
-
+const waterMaterial = new THREE.ShaderMaterial({
+    // wireframe: true,
+    vertexShader: waterVertexShader,
+    fragmentShader: waterFragmetShader,
+})
 // Mesh
 const water = new THREE.Mesh(waterGeometry, waterMaterial)
 water.rotation.x = - Math.PI * 0.5
