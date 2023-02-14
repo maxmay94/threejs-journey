@@ -3,6 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
 import waterVertexShader from './shaders/water/vertex.glsl'
 import waterFragmetShader from './shaders/water/fragment.glsl'
+import { DoubleSide } from 'three'
 
 
 /**
@@ -23,7 +24,7 @@ const scene = new THREE.Scene()
  * Water
  */
 // Geometry
-const waterGeometry = new THREE.PlaneGeometry(2, 2, 1024, 1024)
+const waterGeometry = new THREE.PlaneGeometry(5, 5, 1024, 1024)
 
 // Color
 debugObject.depthColor = '#272754'
@@ -32,6 +33,7 @@ debugObject.surfaceColor = '#56678f'
 // Material
 const waterMaterial = new THREE.ShaderMaterial({
     wireframe: debugObject.wireframe,
+    side: DoubleSide,
     vertexShader: waterVertexShader,
     fragmentShader: waterFragmetShader, 
     uniforms: {
@@ -40,6 +42,11 @@ const waterMaterial = new THREE.ShaderMaterial({
         uBigWavesElevation: { value: 0.2 },
         uBigWavesFrequency: { value: new THREE.Vector2(4.0, 1.5) },
         uBigWavesSpeed: { value: 0.75 },
+
+        uSmallWavesElevation: { value: 0.15 },
+        uSmallWavesFrequency: { value: 3 },
+        uSmallWavesSpeed: { value: 0.2 },
+        uSmallWavesIterations: { value: 4 },
 
         uDepthColor: { value: new THREE.Color(debugObject.depthColor) },
         uSurfaceColor: { value: new THREE.Color(debugObject.surfaceColor) },
@@ -81,6 +88,30 @@ gui.add(waterMaterial.uniforms.uBigWavesSpeed, 'value')
     .max(4)
     .step(0.001)
     .name('uBigWavesSpeed')
+
+gui.add(waterMaterial.uniforms.uSmallWavesElevation, 'value')
+    .min(0)
+    .max(1)
+    .step(0.001)
+    .name('uSmallWavesElevation')
+
+gui.add(waterMaterial.uniforms.uSmallWavesFrequency, 'value')
+    .min(0)
+    .max(30)
+    .step(0.001)
+    .name('uSmallWavesFrequency')
+
+gui.add(waterMaterial.uniforms.uSmallWavesSpeed, 'value')
+    .min(0)
+    .max(4)
+    .step(0.001)
+    .name('uSmallWavesSpeed')
+
+gui.add(waterMaterial.uniforms.uSmallWavesIterations, 'value')
+    .min(1)
+    .max(5)
+    .step(1)
+    .name('uSmallWavesIterations')
 
 gui.addColor(debugObject, 'depthColor')
     .onChange(() => {
