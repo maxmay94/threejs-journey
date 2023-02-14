@@ -11,6 +11,7 @@ import waterFragmetShader from './shaders/water/fragment.glsl'
 // Debug
 const gui = new dat.GUI({ width: 340 })
 const debugObject = {}
+debugObject.wireframe = false
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl')
@@ -22,7 +23,7 @@ const scene = new THREE.Scene()
  * Water
  */
 // Geometry
-const waterGeometry = new THREE.PlaneGeometry(2, 2, 128, 128)
+const waterGeometry = new THREE.PlaneGeometry(2, 2, 1024, 1024)
 
 // Color
 debugObject.depthColor = '#272754'
@@ -30,7 +31,7 @@ debugObject.surfaceColor = '#56678f'
 
 // Material
 const waterMaterial = new THREE.ShaderMaterial({
-    // wireframe: true,
+    wireframe: debugObject.wireframe,
     vertexShader: waterVertexShader,
     fragmentShader: waterFragmetShader, 
     uniforms: {
@@ -52,6 +53,11 @@ water.rotation.x = - Math.PI * 0.5
 scene.add(water)
 
 // Debug
+gui.add(debugObject,'wireframe')
+    .onChange((wireframe) => {
+        waterMaterial.wireframe = wireframe
+    })
+
 gui.add(waterMaterial.uniforms.uBigWavesElevation, 'value')
     .min(0)
     .max(1)
