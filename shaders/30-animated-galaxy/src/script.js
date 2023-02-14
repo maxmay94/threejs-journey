@@ -6,8 +6,8 @@ import galaxyVertexShader from './shaders/galaxy/vertex.glsl'
 import galaxyFragmentShader from './shaders/galaxy/fragment.glsl'
 
 /**
- * Base
- */
+* Base
+*/
 // Debug
 const gui = new dat.GUI()
 
@@ -18,8 +18,8 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 /**
- * Galaxy
- */
+* Galaxy
+*/
 const parameters = {}
 parameters.count = 200000
 parameters.size = 0.005
@@ -98,8 +98,8 @@ const generateGalaxy = () =>
     geometry.setAttribute('aRandomness', new THREE.BufferAttribute(randomness, 3))
 
     /**
-     * Material
-     */
+    * Material
+    */
     material = new THREE.ShaderMaterial({
         depthWrite: false,
         blending: THREE.AdditiveBlending,
@@ -113,12 +113,12 @@ const generateGalaxy = () =>
     })
 
     /**
-     * Debug
-     */
+    * Debug
+    */
 
     /**
-     * Points
-     */
+    * Points
+    */
     points = new THREE.Points(geometry, material)
     scene.add(points)
 }
@@ -132,8 +132,8 @@ gui.addColor(parameters, 'insideColor').onFinishChange(generateGalaxy)
 gui.addColor(parameters, 'outsideColor').onFinishChange(generateGalaxy)
 
 /**
- * Sizes
- */
+* Sizes
+*/
 const sizes = {
     width: window.innerWidth,
     height: window.innerHeight
@@ -155,8 +155,8 @@ window.addEventListener('resize', () =>
 })
 
 /**
- * Camera
- */
+* Camera
+*/
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.x = 3
@@ -169,8 +169,8 @@ const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
 
 /**
- * Renderer
- */
+* Renderer
+*/
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
@@ -178,8 +178,8 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 /**
- * Animate
- */
+* Animate
+*/
 const clock = new THREE.Clock()
 
 const tick = () =>
