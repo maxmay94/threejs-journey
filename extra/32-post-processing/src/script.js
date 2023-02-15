@@ -6,8 +6,10 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { DotScreenPass } from 'three/examples/jsm/postprocessing/DotScreenPass.js'
 import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
 import { RGBShiftShader } from 'three/examples/jsm/shaders/RGBShiftShader.js'
 import { GammaCorrectionShader } from 'three/examples/jsm/shaders/GammaCorrectionShader.js'
+import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js'
 import * as dat from 'lil-gui'
 
 /**
@@ -147,7 +149,7 @@ const renderTarget = new THREE.WebGLRenderTarget(
     600, 
     {
         // To fix antialiasing
-        samples: renderer.getPixelRatio() === 1 ? 8 : 0
+        samples: renderer.getPixelRatio() === 1 ? 3 : 0
     }
 )
 
@@ -164,20 +166,43 @@ effectComposer.addPass(renderPass)
 const dotScreenPass = new DotScreenPass()
 dotScreenPass.enabled = false
 effectComposer.addPass(dotScreenPass)
+gui.add(dotScreenPass, 'enabled').name('dotScreenPass')
+
 
 const glitchPass = new GlitchPass()
 glitchPass.goWild = false
-glitchPass.enabled = true
+glitchPass.enabled = false
 effectComposer.addPass(glitchPass)
+gui.add(glitchPass, 'enabled').name('glitchPass')
+
 
 const rgbShiftPass = new ShaderPass(RGBShiftShader)
 rgbShiftPass.enabled = false
 effectComposer.addPass(rgbShiftPass)
+gui.add(rgbShiftPass, 'enabled').name('rgbShiftPass')
+
+const unrealBloomPass = new UnrealBloomPass()
+unrealBloomPass.strength = 0.6
+unrealBloomPass.radius = 2
+unrealBloomPass.threshold = 0.2
+unrealBloomPass.enabled = false
+effectComposer.addPass(unrealBloomPass)
+
+gui.add(unrealBloomPass, 'enabled').name('unrealBloomPass')
+// gui.add(unrealBloomPass, 'strength').min(0).max(2).step(0.001)
+// gui.add(unrealBloomPass, 'radius').min(0).max(2).step(0.001)
+// gui.add(unrealBloomPass, 'threshold').min(0).max(1).step(0.001)
 
 
-
+// Gamma Correction, brings back brightness
 const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader)
 effectComposer.addPass(gammaCorrectionPass)
+
+// SMAA Antialiasing
+if(renderer.getPixelRatio() === 1 && !renderer.capabilities.isWebGL2) {
+    const smaaPass = new SMAAPass()
+    effectComposer.addPass(smaaPass)
+}
 
 
 
