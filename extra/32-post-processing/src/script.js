@@ -193,6 +193,41 @@ gui.add(unrealBloomPass, 'enabled').name('unrealBloomPass')
 // gui.add(unrealBloomPass, 'radius').min(0).max(2).step(0.001)
 // gui.add(unrealBloomPass, 'threshold').min(0).max(1).step(0.001)
 
+// Tint Pass
+const tintShader = {
+    uniforms:{
+        tDiffuse: { value: null },
+        uTint: {value: null}
+    },
+    vertexShader: `
+        varying vec2 vUv;
+
+        void main() {
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            vUv = uv;
+        }
+    `,
+    fragmentShader: `
+        uniform sampler2D tDiffuse;
+        uniform vec3 uTint;
+
+        varying vec2 vUv;
+
+        void main() {
+            vec4 color = texture2D(tDiffuse, vUv);
+            color.rgb += uTint;
+            gl_FragColor = color;
+        }
+    `
+}
+const tintPass = new ShaderPass(tintShader)
+tintPass.material.uniforms.uTint.value = new THREE.Vector3()
+effectComposer.addPass(tintPass)
+
+gui.add(tintPass.material.uniforms.uTint.value, 'x').min(-1).max(1).step(0.001).name('red')
+gui.add(tintPass.material.uniforms.uTint.value, 'y').min(-1).max(1).step(0.001).name('green')
+gui.add(tintPass.material.uniforms.uTint.value, 'z').min(-1).max(1).step(0.001).name('blue')
+
 
 // Gamma Correction, brings back brightness
 const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader)
