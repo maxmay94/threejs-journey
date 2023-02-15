@@ -141,10 +141,23 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 /**
  * Post processing
  */
-const effectComposer = new EffectComposer(renderer)
+// Render Target
+const renderTarget = new THREE.WebGLRenderTarget(
+    800, 
+    600, 
+    {
+        // To fix antialiasing
+        samples: renderer.getPixelRatio() === 1 ? 8 : 0
+    }
+)
+
+// Effect composer
+const effectComposer = new EffectComposer(renderer, renderTarget)
 effectComposer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 effectComposer.setSize(sizes.width, sizes.height)
 
+
+// Render Pass
 const renderPass = new RenderPass(scene, camera)
 effectComposer.addPass(renderPass)
 
