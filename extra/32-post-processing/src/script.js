@@ -261,9 +261,12 @@ const displacementShader = {
         }
     `
 }
+
+
 const displacementPass = new ShaderPass(displacementShader)
 displacementPass.material.uniforms.uNormalMap.value = textureLoader.load('/textures/interfaceNormalMap.png')
-effectComposer.addPass(displacementPass)
+// effectComposer.addPass(displacementPass)
+
 
 // Gamma Correction, brings back brightness
 const gammaCorrectionPass = new ShaderPass(GammaCorrectionShader)
