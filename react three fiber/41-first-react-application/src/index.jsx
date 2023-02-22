@@ -8,7 +8,7 @@ const toto = 'there'
 
 root.render(
     <>
-        <App>
+        <App clickersCount={ 10 }>
             <h1>Cool React App</h1>
             <h2>content content content</h2>
         </App>
