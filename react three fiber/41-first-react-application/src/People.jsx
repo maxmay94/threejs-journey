@@ -14,7 +14,6 @@ export default function People() {
     setPeople(result)
   } 
 
-
   return (
     <div>
       <h2>People</h2>
