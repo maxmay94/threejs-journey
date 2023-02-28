@@ -143,7 +143,7 @@ export default function Experience()
                 shadows={{ type: 'contact', opacity: 0.2, blur: 3 }}
                 environment='sunset'
                 preset='portrait'
-                intensity={2}
+                intensity={1}
             >
                 <mesh castShadow position-y={1} position-x={ - 2 }>
                     <sphereGeometry />
