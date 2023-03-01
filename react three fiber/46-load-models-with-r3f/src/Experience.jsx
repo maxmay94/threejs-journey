@@ -23,9 +23,7 @@ export default function Experience()
                 <meshStandardMaterial color="greenyellow" />
             </mesh>
 
-            <Suspense
-                fallback={ <Placeholder scale={[ 2, 3, 2 ]} /> }
-            >
+            <Suspense fallback={<Placeholder scale={[ 2, 3, 2 ]} position-y={0.5} />} >
                 <Model />
             </Suspense>
         </>
