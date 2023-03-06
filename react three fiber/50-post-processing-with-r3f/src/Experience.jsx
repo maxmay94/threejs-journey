@@ -3,8 +3,13 @@ import { Perf } from 'r3f-perf'
 import { EffectComposer, Glitch, Noise, Vignette, Bloom, DepthOfField, SSR } from '@react-three/postprocessing'
 import { BlendFunction, GlitchMode } from 'postprocessing'
 import { useControls } from 'leva'
+import { useRef } from 'react'
+
+import Drunk from './Drunk'
 
 export default function Experience() {
+
+    const drunkREf = useRef()
 
 
     // const ssrProps = useControls('SSR Effect', {
@@ -38,6 +43,11 @@ export default function Experience() {
     //     ior: { value: 1.45, min: 0, max: 2 }
     // })
 
+    const drunkProps = useControls('Drunk Effect', {
+        frequency: { value: 2, min: 1, max: 20 },
+        amplitude: { value: 0.1, min: 0, max: 1 },
+    })
+
     return <>
 
         <color args={['#ffffff']} attach='background' />
@@ -65,6 +75,11 @@ export default function Experience() {
                 bokehScale={ 6 }
             /> */}
             {/* <SSR  {...ssrProps} /> */}
+            <Drunk
+                ref={drunkREf}
+                {...drunkProps}
+                BlendFunction={ BlendFunction.DARKEN }
+            />
         </EffectComposer>
 
         <Perf position="top-left" />
