@@ -10,7 +10,6 @@ body,
     background: ivory;
 }
 
-
 .interface {
     position: fixed;
     top: 0;
@@ -48,9 +47,6 @@ body,
     cursor: pointer;
 }
 
-/**
- * Controls
- */
  .controls
  {
      position: absolute;
